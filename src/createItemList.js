@@ -11,6 +11,7 @@
 
 const storeItemListUl = document.querySelector('.store--item-list')
 const cartItemListUl =document.querySelector('.cart--item-list')
+const totalNumber = document.querySelector('.total-number')
 
 function renderStore() {
 
@@ -40,7 +41,7 @@ function renderStore() {
           addCartBtnEvent(addCartBtn, item)
     });
 }
-    
+// -----------------
     // pushes item to cart, now i just need to get visibility
 function addCartBtnEvent (addCartBtn, currentItem) {
     addCartBtn.addEventListener('click', () => {
@@ -50,18 +51,23 @@ function addCartBtnEvent (addCartBtn, currentItem) {
         // return state.cart
     })
 }
+// ----------------
 
 function renderCart() {
     cartItemListUl.innerHTML = ""
 
-    state.cart.forEach(item => {
+    const displayItems = cartQuantityManager()
+    displayItems.forEach(item => {
         // if (itemAdded === items) {
             const cartItem = item
             console.log(cartItem)
         // }
-        const itemName = cartItem.name
+        // item has to mentioned again because its in another array in the cartDisplay() function
+        const itemName = item.item.name
         console.log()
-        const itemID = cartItem.id
+        // const itemID = cartItem.id
+        const itemID = item.item.id
+
         
         // add li to ul
         const cartItemLi = document.createElement("li")
@@ -81,31 +87,65 @@ function renderCart() {
         // remove item when remove button is clicked
         const removeBtn = document.createElement('button')
         // removeBtn.className = "quantity-btn remove-btn center"
-        removeBtn.className = "quantity-btn remove-btn center"
+        removeBtn.className = "quantity-btn, remove-btn, center"
         removeBtn.innerText = "-"
         cartItemLi.append(removeBtn)
+
         removeBtn.addEventListener('click', () => {
-            cartItemLi.remove()
+            const foundItem = state.cart.find(item => item.id === itemID)
+            state.cart.splice(state.cart.indexOf(foundItem), 1)
+            // item.item.quantity--
+            renderCart()
+            // total()
         })
         
         // quantity feature needs to be added
-        
+        const span = document.createElement('span')
+        span.classList.add('quantity-text', 'center')
+        span.innerText = item.quantity
+        cartItemLi.append(span)
 
         // add item when add button is clicked
         const addBtn = document.createElement('button')
         // addBtn.className = "quantity-btn remove-btn center"
-        addBtn.className = "quantity-btn add-btn center"
+        addBtn.className = "quantity-btn, add-btn, center"
         
         addBtn.innerText = "+"
         cartItemLi.append(addBtn)
-        removeBtn.addEventListener('click', () => {
-            
+
+        addBtn.addEventListener('click', () => {
+            state.cart.push(item.item)
+            renderCart()
         })
         
         cartItemListUl.append(cartItemLi)
         // return cartItemLi
         
     })
+    total()
+}
+
+// -------------
+function cartQuantityManager() {
+    let display = []
+    state.cart.forEach(item => {
+      const foundItem = display.find(displayItem => item.name === displayItem.item.name)
+      if (foundItem === undefined) {
+        display.push({item: item, quantity: 1})
+      } else {
+        foundItem.quantity++
+      }
+    })
+    return display
+}
+
+// ---------------
+function total() {
+    
+    initialPrice = 0
+    const total = state.cart.reduce((previous, current) => previous + current.price, initialPrice)
+    const totalPrice = `£${total.toFixed(2)}`
+    totalNumber.innerText = totalPrice
 }
     
 renderStore()
