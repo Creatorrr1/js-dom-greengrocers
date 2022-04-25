@@ -87,7 +87,8 @@ function renderCart() {
         // remove item when remove button is clicked
         const removeBtn = document.createElement('button')
         // removeBtn.className = "quantity-btn remove-btn center"
-        removeBtn.className = "quantity-btn, remove-btn, center"
+        removeBtn.className = "quantity-btn, center"
+        removeBtn.setAttribute("class","remove-btn")
         removeBtn.innerText = "-"
         cartItemLi.append(removeBtn)
 
@@ -108,7 +109,8 @@ function renderCart() {
         // add item when add button is clicked
         const addBtn = document.createElement('button')
         // addBtn.className = "quantity-btn remove-btn center"
-        addBtn.className = "quantity-btn, add-btn, center"
+        addBtn.className = "quantity-btn, center"
+        addBtn.setAttribute("class","add-btn")
         
         addBtn.innerText = "+"
         cartItemLi.append(addBtn)
